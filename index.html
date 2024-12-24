@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stax</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url('front-view-overturned-wine-bottle-wine-glass.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: blur(5px);
+      z-index: -1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .button {
+      background-color: #404663;
+      color: #fff;
+      border: 0;
+      font-size: 1.5rem;
+      font-weight: 400;
+      padding: 0.75em 1.5em;
+      border-radius: 0.5em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      box-shadow:
+        0px 1.7px 2.2px rgba(0, 0, 0, 0.02),
+        0px 4px 5.3px rgba(0, 0, 0, 0.028),
+        0px 7.5px 10px rgba(0, 0, 0, 0.035),
+        0px 13.4px 17.9px rgba(0, 0, 0, 0.042),
+        0px 25.1px 33.4px rgba(0, 0, 0, 0.05),
+        0px 60px 80px rgba(0, 0, 0, 0.07);
+    }
+
+    .button:active {
+      transform: scale(1.01);
+    }
+
+    .countdown-wrapper {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .countdown-circle {
+      width: 100%;
+      height: 100%;
+    }
+
+    .countdown-number {
+      position: absolute;
+      font-size: 2rem;
+      color: rgb(255, 255, 255);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    circle {
+      stroke: rgb(249, 249, 249);
+    }
+  </style>
+</head>
+<body>
+  <div class="background"></div>
+  <div class="container">
+    <div id="countdown" class="countdown-wrapper">
+      <svg class="countdown-circle" viewBox="0 0 100 100">
+        <circle
+          cx="50"
+          cy="50"
+          r="45"
+          stroke="#FF6937"
+          stroke-width="4"
+          fill="none"
+          stroke-dasharray="282.6"
+          stroke-dashoffset="0"
+        ></circle>
+      </svg>
+      <div id="countdownNumber" class="countdown-number">5</div>
+    </div>
+    <button id="likeButton" class="button hidden">
+      <span>🍷</span>
+      <span>Welcome to Wine Book</span>
+    </button>
+  </div>
+
+  <!-- Include canvas-confetti library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const countdownElement = document.getElementById('countdown');
+    const countdownNumber = document.getElementById('countdownNumber');
+    const likeButton = document.getElementById('likeButton');
+    const circle = countdownElement.querySelector('circle');
+
+    let countdownValue = 5;
+    const totalDuration = 5;
+    const circumference = 2 * Math.PI * 45; // Circle radius is 45
+
+    const updateCircle = (value) => {
+      const offset = circumference - (value / totalDuration) * circumference;
+      circle.style.strokeDashoffset = offset;
+    };
+
+    const countdownInterval = setInterval(() => {
+      countdownValue--;
+      countdownNumber.textContent = countdownValue;
+      updateCircle(countdownValue);
+
+      if (countdownValue <= 0) {
+        clearInterval(countdownInterval);
+        countdownElement.classList.add('hidden');
+        likeButton.classList.remove('hidden');
+      }
+    }, 1000);
+
+    likeButton.addEventListener('click', function () {
+      confetti({
+        particleCount: 150,
+        spread: 60,
+      });
+
+      // Redirect to the specified URL after a 2-second delay
+      setTimeout(() => {
+        window.location.href = "https://www.winebook.co.in/login";
+      }, 2000); // Delay for 2 seconds
+    });
+
+    // Initialize the circle offset
+    updateCircle(totalDuration);
+  </script>
+</body>
+</html>
